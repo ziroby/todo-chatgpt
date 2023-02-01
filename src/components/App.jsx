@@ -44,7 +44,12 @@ const TaskList = () => {
     setTask('');
   };
 
-  const taskBlock = tasks? (
+  return (
+    <div>
+      <form onSubmit={handleSubmit}>
+        <input type="text" value={task} onChange={e => setTask(e.target.value)} />
+        <button type="submit">Add Task</button>
+      </form>
       <ul>
         {tasks.map(task => (
             <li key={task.id}>
@@ -53,15 +58,6 @@ const TaskList = () => {
             </li>
         ))}
       </ul>
-  ) : <div>No Tasks</div>
-
-  return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input type="text" value={task} onChange={e => setTask(e.target.value)} />
-        <button type="submit">Add Task</button>
-      </form>
-      {taskBlock}
     </div>
   );
 };
