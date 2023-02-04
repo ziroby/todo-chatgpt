@@ -1,59 +1,70 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { addTodo, toggleTodo } from './actions';
+import { useSelector, useDispatch } from 'react-redux';
+import { addTodo, removeTodo, toggleTodo } from './actions';
+import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
 import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
 
-const mapStateToProps = state => ({
-  todos: state.todos,
-});
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: '100%',
+    maxWidth: 360,
+    backgroundColor: theme.palette.background.paper,
+  },
+}));
 
-const mapDispatchToProps = dispatch => ({
-  addTodo: text => dispatch(addTodo(text)),
-  toggleTodo: id => dispatch(toggleTodo(id)),
-});
+function App() {
+  const classes = useStyles();
+  const [newTodo, setNewTodo] = React.useState('');
+  const todos = useSelector((state) => state.todos);
+  const dispatch = useDispatch();
 
-class App extends React.Component {
-  state = {
-    text: '',
+  const handleTodoAdd = () => {
+    dispatch(addTodo(newTodo));
+    setNewTodo('');
   };
 
-  handleTextChange = event => {
-    this.setState({ text: event.target.value });
-  };
-
-  handleAddTodo = () => {
-    this.props.addTodo(this.state.text);
-    this.setState({ text: '' });
-  };
-
-  render() {
-    return (
-      <div>
-        <TextField
-          label="To-do"
-          value={this.state.text}
-          onChange={this.handleTextChange}
-        />
-        <Button onClick={this.handleAddTodo}>Add To-do</Button>
-        <List>
-          {this.props.todos.map(todo => (
-            <ListItem key={todo.id} button onClick={() => this.props.toggleTodo(todo.id)}>
-              <Checkbox checked={todo.completed} />
-              <ListItemText primary={todo.text} />
-            </ListItem>
-          ))}
-        </List>
-      </div>
-    );
-  }
+  return (
+    <div className={classes.root}>
+      <h1>My To-Do App</h1>
+      <TextField
+        label="New To-Do"
+        value={newTodo}
+        onChange={(e) => setNewTodo(e.target.value)}
+        onKeyPress={(e) => {
+          if (e.key === 'Enter') {
+            handleTodoAdd();
+          }
+        }}
+      />
+      <List>
+        {todos.map((todo) => (
+          <ListItem key={todo.id} dense button>
+            <Checkbox
+              onClick={() => dispatch(toggleTodo(todo.id))}
+              checked={todo.completed}
+            />
+            <ListItemText primary={todo.text} />
+            <ListItemSecondaryAction>
+              <IconButton
+                edge="end"
+                aria-label="delete"
+                onClick={() => dispatch(removeTodo(todo.id))}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </ListItemSecondaryAction>
+          </ListItem>
+        ))}
+      </List>
+    </div>
+  );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(App);
+export default App;

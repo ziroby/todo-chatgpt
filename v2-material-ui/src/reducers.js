@@ -1,4 +1,4 @@
-import { ADD_TODO, TOGGLE_TODO } from './actions';
+import { ADD_TODO, TOGGLE_TODO, REMOVE_TODO } from './actions';
 
 const initialState = {
     todos: [],
@@ -26,6 +26,11 @@ export default function todoApp(state = initialState, action) {
                         ? { ...todo, completed: !todo.completed }
                         : todo
                 ),
+            };
+        case REMOVE_TODO:
+            return {
+                ...state,
+                todos: state.todos.filter((todo) => todo.id !== action.id),
             };
         default:
             return state;

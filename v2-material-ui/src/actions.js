@@ -1,5 +1,7 @@
 export const ADD_TODO = 'ADD_TODO';
 export const TOGGLE_TODO = 'TOGGLE_TODO';
+export const REMOVE_TODO = "REMOVE_TODO";
+
 
 let nextTodoId = 0;
 
@@ -16,4 +18,8 @@ export function toggleTodo(id) {
         type: TOGGLE_TODO,
         id,
     };
+}
+
+export function removeTodo(id) {
+    return { type: REMOVE_TODO, id };
 }
