@@ -30,5 +30,9 @@
   },
   "devDependencies": {
     "react-scripts": "^5.0.1"
+  },
+  "author": {
+    "name": "Ron 'Ziroby' Romero",
+    "email": "ziroby@ziroby.com"
   }
 }
