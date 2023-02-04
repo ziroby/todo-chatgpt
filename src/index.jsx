@@ -15,14 +15,16 @@ Copyright 2023 Ron "Ziroby" Romero
 */
 
 import React from 'react';
-import { render } from 'react-dom';
+import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import store from './store';
+import Header from './components/Header';
 import App from './components/App';
 
-render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById('root')
+ReactDOM.render(
+    <Provider store={store}>
+        <Header />
+        <App />
+    </Provider>,
+    document.getElementById('root')
 );
