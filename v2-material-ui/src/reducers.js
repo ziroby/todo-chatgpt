@@ -1,12 +1,10 @@
-// reducers.js
-
 import { ADD_TODO, TOGGLE_TODO } from './actions';
 
 const initialState = {
-    todos: []
+    todos: [],
 };
 
-function todoApp(state = initialState, action) {
+export default function todoApp(state = initialState, action) {
     switch (action.type) {
         case ADD_TODO:
             return {
@@ -14,27 +12,22 @@ function todoApp(state = initialState, action) {
                 todos: [
                     ...state.todos,
                     {
+                        id: action.id,
                         text: action.text,
-                        completed: false
-                    }
-                ]
+                        completed: false,
+                    },
+                ],
             };
         case TOGGLE_TODO:
             return {
                 ...state,
-                todos: state.todos.map((todo, index) => {
-                    if (index === action.index) {
-                        return {
-                            ...todo,
-                            completed: !todo.completed
-                        };
-                    }
-                    return todo;
-                })
+                todos: state.todos.map(todo =>
+                    todo.id === action.id
+                        ? { ...todo, completed: !todo.completed }
+                        : todo
+                ),
             };
         default:
             return state;
     }
 }
-
-export default todoApp;

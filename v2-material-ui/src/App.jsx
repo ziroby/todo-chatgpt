@@ -1,65 +1,59 @@
-import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import {
-  TextField,
-  Button,
-  List,
-  ListItem,
-  ListItemText,
-  Container
-} from "@material-ui/core";
-import { addTodo } from "./actions";
-import { useSelector, useDispatch } from "react-redux";
+import React from 'react';
+import { connect } from 'react-redux';
+import { addTodo, toggleTodo } from './actions';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Checkbox from '@material-ui/core/Checkbox';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 
-const useStyles = makeStyles(theme => ({
-  form: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  textField: {
-    marginRight: theme.spacing(2)
-  }
-}));
+const mapStateToProps = state => ({
+  todos: state.todos,
+});
 
-function TodoList() {
-  const todos = useSelector(state => state.todos);
-  return (
-    <List>
-      {todos.map(todo => (
-        <ListItem key={todo.id}>
-          <ListItemText primary={todo.text} />
-        </ListItem>
-      ))}
-    </List>
-  );
-}
+const mapDispatchToProps = dispatch => ({
+  addTodo: text => dispatch(addTodo(text)),
+  toggleTodo: id => dispatch(toggleTodo(id)),
+});
 
-export default function ToDoApp() {
-  const classes = useStyles();
-  const [todoText, setTodoText] = useState("");
-  const dispatch = useDispatch();
+class App extends React.Component {
+  state = {
+    text: '',
+  };
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    dispatch(addTodo(todoText));
-    setTodoText("");
-  }
+  handleTextChange = event => {
+    this.setState({ text: event.target.value });
+  };
 
-  return (
-    <Container>
-      <form className={classes.form} onSubmit={handleSubmit}>
+  handleAddTodo = () => {
+    this.props.addTodo(this.state.text);
+    this.setState({ text: '' });
+  };
+
+  render() {
+    return (
+      <div>
         <TextField
-          label="Todo"
-          value={todoText}
-          onChange={event => setTodoText(event.target.value)}
-          className={classes.textField}
+          label="To-do"
+          value={this.state.text}
+          onChange={this.handleTextChange}
         />
-        <Button type="submit" variant="contained">
-          Add Todo
-        </Button>
-      </form>
-      <TodoList />
-    </Container>
-  );
+        <Button onClick={this.handleAddTodo}>Add To-do</Button>
+        <List>
+          {this.props.todos.map(todo => (
+            <ListItem key={todo.id} button onClick={() => this.props.toggleTodo(todo.id)}>
+              <Checkbox checked={todo.completed} />
+              <ListItemText primary={todo.text} />
+            </ListItem>
+          ))}
+        </List>
+      </div>
+    );
+  }
 }
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(App);
